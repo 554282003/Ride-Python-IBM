@@ -4,6 +4,7 @@ import re
 from db_connection import insert_data,find_user_by_email
 from utility.user_to_dic import user_to_dict
 from utility.hashing import hash_password,check_password
+from utility.validation import validate_email,validate_phone
 
 # ---------------- Decorators ----------------
 def login_required(func):
@@ -44,12 +45,12 @@ class AuthController:
         if not all([user_id, full_name, email, phone, role, password]):
             return "All fields required!!!"
         
-        check_email = self._validate_email(email)
+        check_email = validate_email(email)
         check_user_exist = find_user_by_email(self.db,email)
         if check_user_exist:
             return "User already Exist"
         
-        check_phone = self._validate_phone(phone)
+        check_phone = validate_phone(phone)
         if(not check_email or not check_phone):
             return "Invalid email or phone"
 
@@ -72,7 +73,7 @@ class AuthController:
         """
         Verify credentials and set _current_user
         """
-        check_email = self._validate_email(email)
+        check_email = validate_email(email)
         if not check_email:
             return "Invalid Email"
         
@@ -93,19 +94,3 @@ class AuthController:
         """Logout the current user"""
         self._current_user = None
         print("User logged out.")
-
-    # --------------- Private / Helper Methods ----------------
-    def _validate_email(self, email):
-        """Internal helper for email format validation"""
-        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if(re.match(pattern,email)):
-            return True
-        return False
-
-    def _validate_phone(self, phone):
-        """Internal helper for phone format validation"""
-        pattern = r'^\+[0-9]{2}-[0-9]{10}$'
-        if(re.match(pattern,phone)):
-            return True
-        return False
-
