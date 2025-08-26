@@ -1,4 +1,5 @@
-import re
+import re 
+
 def validate_email(email):
     """Internal helper for email format validation"""
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -12,4 +13,3 @@ def validate_phone(phone):
     if(re.match(pattern,phone)):
         return True
     return False
-
